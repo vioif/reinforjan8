@@ -6,15 +6,16 @@ require 'holidays'
 class Cohort
 
   FIRST_COFFEE_CODE_WEEK = 3
-  LAST_COFFEE_CODE_WEEK  = 10
-  WEEK_IN_COHORT         = 10
+  LAST_COFFEE_CODE_WEEK = 10
+  WEEKS_IN_COHORT = 10
+
 
   def initialize(first_day)
     @first_day = first_day
   end
 
   def last_day
-    @first_day + (WEEK_IN_COHORT - 1).weeks + 4.days
+    @first_day + (WEEKS_IN_COHORT - 1).weeks + 4.days
   end
 
   def no_lecture_on(day)
@@ -22,13 +23,13 @@ class Cohort
   end
 
   def double_check_holiday(day)
-    potential_holiday = holidays.on(day, :ca_on)
+    potential_holidays = Holidays.on(day, :ca_on)
 
-    if potential_holiday.any?
-      potential_holiday.each do |h|
+    if potential_holidays.any?
+      potential_holidays.each do |h|
         print "Are you taking #{h} off? y/N: "
-        answer             = gets.chomp
-        if answer.downcase = 'y'
+        answer = gets.chomp
+        if answer.downcase == 'y'
           return true
         end
       end
@@ -51,8 +52,8 @@ class Cohort
     return @class_days
   end
 
-  def week_of_cohort
-    (first_day..last_day).each_slice(7)
+  def weeks_of_cohort
+    (@first_day..last_day).each_slice(7)
   end
 
   def week_of(day)
@@ -68,7 +69,7 @@ class Cohort
     return nil
   end
 
-  def coffee_code_day(day)
+  def coffee_code_day?(day)
     day.tuesday? || day.thursday?
   end
 
@@ -83,9 +84,9 @@ class Cohort
       if coffee_code_week?(day) && coffee_code_day?(day)
         list << day
       end
-
-
-      return list
     end
+
+    return list
+  end
 
 end
